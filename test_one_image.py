@@ -26,6 +26,15 @@ detransformer = transforms.Compose([
         transforms.Normalize([0, 0, 0], [1/0.229, 1/0.224, 1/0.225]),
         transforms.Normalize([-0.485, -0.456, -0.406], [1, 1, 1])
     ])
+
+def run_alignment(image_path):
+  import dlib
+  from pspscripts.align_all_parallel import align_face
+  predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+  aligned_image = align_face(filepath=image_path, predictor=predictor)
+  print("Aligned image has shape: {}".format(aligned_image.size))
+  return aligned_image
+
 if __name__ == '__main__':
     opt = TestOptions().parse()
 
@@ -38,13 +47,16 @@ if __name__ == '__main__':
     with torch.no_grad():
         
         pic_a = opt.pic_a_path
-        img_a = Image.open(pic_a).convert('RGB')
+
+        img_a = run_alignment(pic_a)
+        # img_a = Image.open(pic_a).convert('RGB')
         img_a = transformer_Arcface(img_a)
         img_id = img_a.view(-1, img_a.shape[0], img_a.shape[1], img_a.shape[2])
 
         pic_b = opt.pic_b_path
 
-        img_b = Image.open(pic_b).convert('RGB')
+        img_b = run_alignment(pic_b)
+        # img_b = Image.open(pic_b).convert('RGB')
         img_b = transformer(img_b)
         img_att = img_b.view(-1, img_b.shape[0], img_b.shape[1], img_b.shape[2])
 
