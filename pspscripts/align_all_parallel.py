@@ -25,8 +25,8 @@ import dlib
 import multiprocessing as mp
 import math
 
-from configs.paths_config import model_paths
-SHAPE_PREDICTOR_PATH = model_paths["shape_predictor"]
+# from configs.paths_config import model_paths
+SHAPE_PREDICTOR_PATH = None #model_paths["shape_predictor"]
 
 
 def get_landmark(filepath, predictor):
